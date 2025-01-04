@@ -20,14 +20,14 @@ const initData: AppContextType = {
     score: 0,
     currentPage: "home"
 }
-const appReducer = (data: AppContextType, action: Action) => {
+const appReducer: React.Reducer<AppContextType, Action> = (data: AppContextType, action: Action) => {
     switch (action.type) {
         case "SET_PAGE":
             return { ...data, currentPage: action.page }
         case "SET_TOPIC":
             return { ...data, currentTopic: action.topic }
         case "SET_QUIZ_DATA": {
-            const questions = action.questions.map((question: Question) => ({ ...question, options: question.options.map((option, index) => ({ ...option, id: index + 1, content: option })) }))
+            const questions = action.questions.map((question: Question) => ({ ...question, options: question.options.map((option, index) => ({ id: index + 1, content: option as unknown as string })) }))
             return { ...data, quizData: questions }
         }
         case "SET_CURRENT_QUESTION_INDEX":
@@ -47,7 +47,7 @@ interface AppContextProviderProps {
 }
 
 export default function AppContextProvider({ children }: AppContextProviderProps): React.JSX.Element {
-    const [state, dispatch] = React.useReducer(appReducer, initData)
+    const [state, dispatch] = React.useReducer<React.Reducer<AppContextType, Action>>(appReducer, initData);
     return <AppContext.Provider value={{ state, dispatch }}>
         {children}
     </AppContext.Provider>
